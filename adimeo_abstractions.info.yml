@@ -1,0 +1,6 @@
+name: adimeo_generator
+type: module
+description: Adimeo&#039;s abstracts and traits
+package: Adimeo
+core: 8.x
+core_version_requirement: ^8 || ^9

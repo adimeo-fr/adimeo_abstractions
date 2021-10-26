@@ -2,6 +2,7 @@
 
 namespace Drupal\adimeo_abstractions\BreadcrumbBuilder;
 
+use Drupal\adimeo_abstractions\BreadcrumbBuilder\Applier\NodeBundleBreadcrumbBuilderSingleNodePageApplierTrait;
 use Drupal\adimeo_abstractions\Constants\RouteMatchDefinitions;
 use Drupal\adimeo_abstractions\Constants\RoutesDefinitions;
 use Drupal\Core\Breadcrumb\Breadcrumb;
@@ -13,20 +14,7 @@ use Drupal\node\Entity\Node;
 trait NodeBundleBreadcrumbSingleNodePageTrait {
 
   use HomeLinkTrait;
-
-  protected function isRouteNodeBundleView(RouteMatchInterface $routeMatch) {
-    if (!$this->isRouteNodeView($routeMatch->getRouteName())) {
-      return FALSE;
-    }
-
-    // Given the routes allowed to go so far, node param (Node object) will always exist.
-    $node = $this->getNodeFromRouteMatch($routeMatch);
-    return $this->isNodeOfTargetedBundle($node);
-  }
-
-  protected function isRouteNodeView(string $routeName) {
-    return in_array($routeName, RoutesDefinitions::NODE_VIEW_ROUTES);
-  }
+  use NodeBundleBreadcrumbBuilderSingleNodePageApplierTrait;
 
   protected function buildNodeViewBreadcrumb(RouteMatchInterface $route_match): Breadcrumb {
     $node = $this->getNodeFromRouteMatch($route_match);
@@ -40,13 +28,7 @@ trait NodeBundleBreadcrumbSingleNodePageTrait {
     return $breadcrumb;
   }
 
-  protected function getNodeFromRouteMatch(RouteMatchInterface $routeMatch): Node {
-    return $routeMatch->getParameter(RouteMatchDefinitions::NODE_PARAMETER);
-  }
 
-  protected function isNodeOfTargetedBundle(Node $node) {
-    return $node->bundle() === $this->getNodeBundle();
-  }
 
   abstract protected function getNodeBundle(): string;
 

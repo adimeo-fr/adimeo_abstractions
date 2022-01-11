@@ -5,7 +5,7 @@ namespace Drupal\adimeo_abstractions\BreadcrumbBuilder\Applier;
 use Drupal\adimeo_abstractions\RouteMatch\GetNodeFromRouteMatchTrait;
 use Drupal\adimeo_abstractions\RouteMatch\IsRouteNodeViewTrait;
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
 
 trait NodeBundleBreadcrumbBuilderSingleNodePageApplierTrait {
   use GetNodeFromRouteMatchTrait;
@@ -21,7 +21,7 @@ trait NodeBundleBreadcrumbBuilderSingleNodePageApplierTrait {
     return $this->isNodeOfTargetedBundle($node);
   }
 
-  protected function isNodeOfTargetedBundle(Node $node) {
+  protected function isNodeOfTargetedBundle(NodeInterface $node) {
     return $node->bundle() === $this->getNodeBundle();
   }
 }

@@ -1,0 +1,16 @@
+{
+    "name": "adimeo/adimeo_abstractions",
+    "license": "GPL-3.0-only",
+    "description": "Abstract classes and traits for concrete use in projects @Adimeo",
+    "type": "drupal-module",
+    "authors": [
+        {
+            "name": "Adimeo",
+            "email": "contact@adimeo.com"
+        }
+    ],
+    "require": {
+        "drupal/core": ">=v8.0",
+        "php": ">=7.3.0"
+    }
+}

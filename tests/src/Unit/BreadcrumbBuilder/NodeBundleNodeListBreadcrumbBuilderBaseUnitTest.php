@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\adimeo_abstractions\Unit\BreadcrumbBuilder;
 
-use Drupal\adimeo_abstractions\BreadcrumbBuilder\HomeLinkTrait;
+use Drupal\adimeo_abstractions\BreadcrumbBuilder\Composition\HomeLinkTrait;
 use Drupal\adimeo_abstractions\BreadcrumbBuilder\NodeBundleNodeListBreadcrumbBuilderBase;
 use Drupal\adimeo_abstractions\BreadcrumbBuilder\NodeBundleRouteListBreadcrumbBuilderBase;
 use Drupal\adimeo_abstractions\Constants\RoutesDefinitions;

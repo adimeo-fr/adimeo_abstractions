@@ -1,20 +1,33 @@
 <?php
 
-namespace Drupal\adimeo_abstractions\BreadcrumbBuilder;
+namespace Drupal\adimeo_abstractions\BreadcrumbBuilder\Composition;
 
-use Drupal\adimeo_abstractions\BreadcrumbBuilder\Applier\NodeBundleBreadcrumbBuilderSingleNodePageApplierTrait;
-use Drupal\adimeo_abstractions\Constants\RouteMatchDefinitions;
+use Drupal\adimeo_abstractions\BreadcrumbBuilder\Composition\HomeLinkTrait;
 use Drupal\adimeo_abstractions\Constants\RoutesDefinitions;
+use Drupal\adimeo_abstractions\RouteMatch\GetNodeFromRouteMatchTrait;
 use Drupal\Core\Breadcrumb\Breadcrumb;
 use Drupal\Core\Link;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
-use Drupal\node\Entity\Node;
+use function t;
 
-trait NodeBundleBreadcrumbSingleNodePageTrait {
+trait RouteListTrait {
 
   use HomeLinkTrait;
-  use NodeBundleBreadcrumbBuilderSingleNodePageApplierTrait;
+  use GetNodeFromRouteMatchTrait;
+
+  protected function isRouteListRoute(RouteMatchInterface $routeMatch): bool {
+    return $this->getListRoute() == $routeMatch->getRouteName();
+  }
+
+  protected function buildListBreadcrumb(RouteMatchInterface $route_match): Breadcrumb {
+    $breadcrumb = new Breadcrumb();
+    $breadcrumb->setLinks([
+      $this->getHomeLink(),
+      new Link(t($this->getListLabel()), Url::fromRoute(RoutesDefinitions::NONE)),
+    ]);
+    return $breadcrumb;
+  }
 
   protected function buildNodeViewBreadcrumb(RouteMatchInterface $route_match): Breadcrumb {
     $node = $this->getNodeFromRouteMatch($route_match);
@@ -27,10 +40,6 @@ trait NodeBundleBreadcrumbSingleNodePageTrait {
 
     return $breadcrumb;
   }
-
-
-
-  abstract protected function getNodeBundle(): string;
 
   abstract protected function getListRoute(): string;
 

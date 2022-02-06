@@ -1,10 +1,11 @@
 <?php
 
-namespace Drupal\adimeo_abstractions\BreadcrumbBuilder;
+namespace Drupal\adimeo_abstractions\BreadcrumbBuilder\Composition;
 
 use Drupal\adimeo_abstractions\Constants\RoutesDefinitions;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use function t;
 
 trait HomeLinkTrait {
 

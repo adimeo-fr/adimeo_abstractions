@@ -3,6 +3,8 @@
 namespace Drupal\adimeo_abstractions\BreadcrumbBuilder;
 
 use Drupal\adimeo_abstractions\Constants\RoutesDefinitions;
+use Drupal\adimeo_abstractions\RouteMatch\GetNodeFromRouteMatchTrait;
+use Drupal\adimeo_abstractions\RouteMatch\IsRouteNodeViewTrait;
 use Drupal\Core\Breadcrumb\Breadcrumb;
 use Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface;
 use Drupal\Core\Link;
@@ -14,17 +16,15 @@ use Drupal\node\NodeInterface;
 abstract class NodeBundleNodeListBreadcrumbBuilderBase implements BreadcrumbBuilderInterface {
 
   protected $urlGenerator;
-
-  use NodeBundleBreadcrumbSingleNodePageTrait {
-    apply as applyNodeBundleSinglePage;
-  }
+  use GetNodeFromRouteMatchTrait, HomeLinkTrait, IsRouteNodeViewTrait;
 
   public function __construct(UrlGeneratorInterface $urlGenerator) {
     $this->urlGenerator = $urlGenerator;
   }
 
   public function applies(RouteMatchInterface $route_match) {
-    return $this->applyNodeBundleSinglePage($route_match) || $this->applyNodeListTypeSinglePage($route_match);
+    $node = $this->getNodeFromRouteMatch($route_match);
+    return $this->isNodeOfTargetedBundle($node) || $this->applyNodeListTypeSinglePage($route_match);
   }
 
   public function build(RouteMatchInterface $route_match) {
@@ -84,5 +84,11 @@ abstract class NodeBundleNodeListBreadcrumbBuilderBase implements BreadcrumbBuil
   protected function isCurrentNodeListNode(NodeInterface $node) {
     return $node->id() === $this->getListNode()->id();
   }
+
+  protected function isNodeOfTargetedBundle(NodeInterface $node) {
+    return $node->bundle() === $this->getNodeBundle();
+  }
+
+  abstract protected function getNodeBundle(): string;
 
 }

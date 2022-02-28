@@ -10,7 +10,7 @@ use Drupal\node\NodeInterface;
 
 trait NodeListTrait {
 
-  abstract protected function getListNode(): NodeInterface;
+  abstract protected function getListNode(): ?NodeInterface;
 
   protected function getListNodeBundle(): string {
     return $this->getListNode()->bundle();

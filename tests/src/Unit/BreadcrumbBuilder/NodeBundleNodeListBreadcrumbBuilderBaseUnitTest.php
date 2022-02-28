@@ -212,6 +212,19 @@ class NodeBundleNodeListBreadcrumbBuilderBaseUnitTest extends UnitTestCase {
     );
   }
 
+  public function testArticleBreadcrumbIsNotAppliedIfNoArticleListNodeAvailable() {
+    $routeMatch = $this->getCorrectArticleViewRouteMatch();
+
+    $breadcrumbBuilder = $this->getMockForAbstractClass(NodeBundleNodeListBreadcrumbBuilderBase::class, [$this->createUrlGeneratorMock()]);
+    $breadcrumbBuilder->method(self::METHOD_GET_NODE_BUNDLE)
+      ->willReturn(self::ARTICLE_NODE_BUNDLE);
+
+    $breadcrumbBuilder->method(self::METHOD_GET_LIST_NODE)
+      ->willReturn(NULL);
+
+    $this->assertFalse($breadcrumbBuilder->applies($routeMatch), "Article Breadcrumb is applied when there is no existing article list");
+  }
+
   /**
    * @covers \Drupal\adimeo_abstractions\BreadcrumbBuilder\NodeBundleRouteListBreadcrumbBuilderBase::build
    * @author adimeo
@@ -355,51 +368,50 @@ class NodeBundleNodeListBreadcrumbBuilderBaseUnitTest extends UnitTestCase {
     );
   }
 
-    public function testBuildArticleListBreadcrumbContainsLinkToHomeAsFirstLink() {
-      $this->testBuiltBreadcrumbContainsLinkToHomeAsFirstLink(
-        $this->getBuiltArticleListBreadcrumb(),
-        "Article list breadcrumb does not contain link to home as first link"
-      );
-    }
+  public function testBuildArticleListBreadcrumbContainsLinkToHomeAsFirstLink() {
+    $this->testBuiltBreadcrumbContainsLinkToHomeAsFirstLink(
+      $this->getBuiltArticleListBreadcrumb(),
+      "Article list breadcrumb does not contain link to home as first link"
+    );
+  }
 
-    /**
-     * @covers \Drupal\adimeo_abstractions\BreadcrumbBuilder\NodeBundleRouteListBreadcrumbBuilderBase::build
-     * @author adimeo
-     * @group adimeoAbstractions
-     * @group breadcrumbBuilder
-     */
-    public function testBuiltArticleListBreadcrumbContainsLinkLabelledAfterHomeAsFirstLink() {
-      $this->testBuiltBreadcrumbContainsLinkLabelledAfterHomeAsFirstLink(
-        $this->getBuiltArticleListBreadcrumb(),
-        "Article list breadcrumb does not contain link labelled after home as first link"
-      );
-    }
+  /**
+   * @covers \Drupal\adimeo_abstractions\BreadcrumbBuilder\NodeBundleRouteListBreadcrumbBuilderBase::build
+   * @author adimeo
+   * @group adimeoAbstractions
+   * @group breadcrumbBuilder
+   */
+  public function testBuiltArticleListBreadcrumbContainsLinkLabelledAfterHomeAsFirstLink() {
+    $this->testBuiltBreadcrumbContainsLinkLabelledAfterHomeAsFirstLink(
+      $this->getBuiltArticleListBreadcrumb(),
+      "Article list breadcrumb does not contain link labelled after home as first link"
+    );
+  }
 
-    /**
-     * @covers \Drupal\adimeo_abstractions\BreadcrumbBuilder\NodeBundleRouteListBreadcrumbBuilderBase::build
-     * @author adimeo
-     * @group adimeoAbstractions
-     * @group breadcrumbBuilder
-     */
-    public function testBuiltArticleListBreadcrumbContainsEmptyLinkAsSecondLink() {
-      $breadcrumb = $this->getBuiltArticleListBreadcrumb();
-      $secondLink = $breadcrumb->getLinks()[1];
-      $this->assertTrue(
-        $secondLink->getUrl()
-          ->getRouteName() === RoutesDefinitions::NONE,
-        "Article list breadcrumb does not contain an empty link as second link"
-      );
-    }
+  /**
+   * @covers \Drupal\adimeo_abstractions\BreadcrumbBuilder\NodeBundleRouteListBreadcrumbBuilderBase::build
+   * @author adimeo
+   * @group adimeoAbstractions
+   * @group breadcrumbBuilder
+   */
+  public function testBuiltArticleListBreadcrumbContainsEmptyLinkAsSecondLink() {
+    $breadcrumb = $this->getBuiltArticleListBreadcrumb();
+    $secondLink = $breadcrumb->getLinks()[1];
+    $this->assertTrue(
+      $secondLink->getUrl()
+        ->getRouteName() === RoutesDefinitions::NONE,
+      "Article list breadcrumb does not contain an empty link as second link"
+    );
+  }
 
-    /**
-     * @covers \Drupal\adimeo_abstractions\BreadcrumbBuilder\NodeBundleRouteListBreadcrumbBuilderBase::build
-     * @author adimeo
-     * @group adimeoAbstractions
-     * @group breadcrumbBuilder
-     */
+  /**
+   * @covers \Drupal\adimeo_abstractions\BreadcrumbBuilder\NodeBundleRouteListBreadcrumbBuilderBase::build
+   * @author adimeo
+   * @group adimeoAbstractions
+   * @group breadcrumbBuilder
+   */
 
   public function testBuiltArticleListBreadcrumbContainsLinkLabelledAfterListAsSecondLink() {
-
     $breadcrumb = $this->getBuiltArticleListBreadcrumb();
     $secondLink = $breadcrumb->getLinks()[1];
     /** @var \Drupal\Core\StringTranslation\TranslatableMarkup $linkText */
@@ -409,7 +421,8 @@ class NodeBundleNodeListBreadcrumbBuilderBaseUnitTest extends UnitTestCase {
       $linkText->getUntranslatedString() === self::LIST_NODE_TITLE,
       "Article list breadcrumb does not contain link labelled after node list as second link",
     );
-    }
+  }
+
   protected function testBuiltBreadcrumbContainsLinkToHomeAsFirstLink(Breadcrumb $breadcrumb, string $message) {
     $firstLink = $breadcrumb->getLinks()[0];
     $this->assertTrue(

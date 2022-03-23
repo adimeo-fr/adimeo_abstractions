@@ -48,6 +48,10 @@ class NodeBundleRouteListBreadcrumbBuilderBaseUnitTest extends UnitTestCase {
 
   const METHOD_BUNDLE = 'bundle';
 
+  const METHOD_GET_CACHE_TAGS = 'getCacheTags';
+
+  const URL_CACHE_CONTEXT = 'url';
+
   /**
    * @var NodeBundleRouteListBreadcrumbBuilderBase
    */
@@ -394,6 +398,19 @@ class NodeBundleRouteListBreadcrumbBuilderBaseUnitTest extends UnitTestCase {
     );
   }
 
+  /**
+   * @covers \Drupal\adimeo_abstractions\BreadcrumbBuilder\NodeBundleRouteListBreadcrumbBuilderBase::build
+   * @author adimeo
+   * @group adimeoAbstractions
+   * @group breadcrumbBuilder
+   */
+  public function testBuiltArticleNodeViewBreadcrumbContainsUrlCacheContext() {
+    $this->testBuiltBreadcrumbContainsUrlCacheContext(
+      $this->getBuiltArticleViewBreadcrumb(),
+      "Article node view breadcrumb does not contain url cache context",
+    );
+  }
+
   protected function testBuiltBreadcrumbContainsLinkToHomeAsFirstLink(Breadcrumb $breadcrumb, string $message) {
     $firstLink = $breadcrumb->getLinks()[0];
     $this->assertTrue(
@@ -408,7 +425,7 @@ class NodeBundleRouteListBreadcrumbBuilderBaseUnitTest extends UnitTestCase {
     /** @var \Drupal\Core\StringTranslation\TranslatableMarkup $linkText */
     $linkText = $firstLink->getText();
     $this->assertTrue(
-      $linkText->getUntranslatedString() ===HomeLinkTrait::getHomeLabel(),
+      $linkText->getUntranslatedString() === HomeLinkTrait::getHomeLabel(),
       $message
     );
   }
@@ -419,6 +436,13 @@ class NodeBundleRouteListBreadcrumbBuilderBaseUnitTest extends UnitTestCase {
     $linkText = $secondLink->getText();
     $this->assertTrue(
       $linkText->getUntranslatedString() === self::ARTICLE_LIST_LABEL,
+      $message
+    );
+  }
+
+  protected function testBuiltBreadcrumbContainsUrlCacheContext(Breadcrumb $breadcrumb, string $message) {
+    $this->assertTrue(
+      in_array(self::URL_CACHE_CONTEXT, $breadcrumb->getCacheContexts()),
       $message
     );
   }

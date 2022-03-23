@@ -11,6 +11,7 @@ use Drupal\Core\Routing\RouteMatch;
 use Drupal\Core\Routing\UrlGeneratorInterface;
 use Drupal\node\NodeInterface;
 use Drupal\Tests\UnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Test description.
@@ -53,6 +54,10 @@ class NodeBundleNodeListBreadcrumbBuilderBaseUnitTest extends UnitTestCase {
 
   const NOT_LIST_NID = 111;
 
+  const METHOD_GET_CACHE_TAGS = 'getCacheTags';
+
+  const URL_CACHE_CONTEXT = 'url';
+
   /**
    * @var NodeBundleNodeListBreadcrumbBuilderBase
    */
@@ -72,7 +77,7 @@ class NodeBundleNodeListBreadcrumbBuilderBaseUnitTest extends UnitTestCase {
     $this->cocktailBreadcrumbBuilder = $this->buildCocktailBreadcrumbBuilderMock();
   }
 
-  protected function buildArticleBreadcrumbBuilderMock() {
+  protected function buildArticleBreadcrumbBuilderMock(): MockObject|NodeBundleNodeListBreadcrumbBuilderBase {
     $breadcrumbBuilder = $this->getMockForAbstractClass(NodeBundleNodeListBreadcrumbBuilderBase::class, [$this->createUrlGeneratorMock()]);
     $breadcrumbBuilder->method(self::METHOD_GET_NODE_BUNDLE)
       ->willReturn(self::ARTICLE_NODE_BUNDLE);
@@ -83,7 +88,7 @@ class NodeBundleNodeListBreadcrumbBuilderBaseUnitTest extends UnitTestCase {
     return $breadcrumbBuilder;
   }
 
-  protected function buildCocktailBreadcrumbBuilderMock() {
+  protected function buildCocktailBreadcrumbBuilderMock(): MockObject|NodeBundleNodeListBreadcrumbBuilderBase {
     $breadcrumbBuilder = $this->getMockForAbstractClass(NodeBundleNodeListBreadcrumbBuilderBase::class, [$this->createUrlGeneratorMock()]);
     $breadcrumbBuilder->method(self::METHOD_GET_NODE_BUNDLE)
       ->willReturn(self::COCKTAIL_NODE_BUNDLE);
@@ -94,38 +99,38 @@ class NodeBundleNodeListBreadcrumbBuilderBaseUnitTest extends UnitTestCase {
     return $breadcrumbBuilder;
   }
 
-  protected function getCorrectArticleViewRouteMatch() {
+  protected function getCorrectArticleViewRouteMatch(): RouteMatch|MockObject {
     return $this->createRouteMatchMock(RoutesDefinitions::NODE_CANONICAL, $this->buildArticleNodeMock());
   }
 
-  protected function getCorrectArticleRevisionRouteMatch() {
+  protected function getCorrectArticleRevisionRouteMatch(): RouteMatch|MockObject {
     return $this->createRouteMatchMock(RoutesDefinitions::NODE_REVISION, $this->buildArticleNodeMock());
   }
 
-  protected function getCorrectCocktailViewRouteMatch() {
+  protected function getCorrectCocktailViewRouteMatch(): RouteMatch|MockObject {
     return $this->createRouteMatchMock(RoutesDefinitions::NODE_CANONICAL, $this->buildCocktailNodeMock());;
   }
 
   //
-  protected function getIncorrectViewRouteMatch() {
+  protected function getIncorrectViewRouteMatch(): RouteMatch|MockObject {
     return $this->createRouteMatchMock(RoutesDefinitions::NODE_CANONICAL);
   }
 
-  protected function getArticleListRouteMatch() {
+  protected function getArticleListRouteMatch(): RouteMatch|MockObject {
     return $this->createRouteMatchMock(RoutesDefinitions::NODE_CANONICAL, $this->buildListNodeMock(self::ARTICLE_LIST_NODE_BUNDLE));
   }
 
-  protected function getBuiltArticleViewBreadcrumb() {
+  protected function getBuiltArticleViewBreadcrumb(): Breadcrumb {
     $routeMatch = $this->getCorrectArticleViewRouteMatch();
     return $this->articleBreadcrumbBuilder->build($routeMatch);
   }
 
-  protected function getBuiltArticleRevisionBreadcrumb() {
+  protected function getBuiltArticleRevisionBreadcrumb(): Breadcrumb {
     $routeMatch = $this->getCorrectArticleRevisionRouteMatch();
     return $this->articleBreadcrumbBuilder->build($routeMatch);
   }
 
-  protected function getBuiltArticleListBreadcrumb() {
+  protected function getBuiltArticleListBreadcrumb(): Breadcrumb {
     $routeMatch = $this->getArticleListRouteMatch();
     return $this->articleBreadcrumbBuilder->build($routeMatch);
   }
@@ -423,6 +428,19 @@ class NodeBundleNodeListBreadcrumbBuilderBaseUnitTest extends UnitTestCase {
     );
   }
 
+  /**
+   * @covers \Drupal\adimeo_abstractions\BreadcrumbBuilder\NodeBundleRouteListBreadcrumbBuilderBase::build
+   * @author adimeo
+   * @group adimeoAbstractions
+   * @group breadcrumbBuilder
+   */
+  public function testBuiltArticleListBreadcrumbContainsUrlCacheContext() {
+    $this->testBuiltBreadcrumbContainsUrlCacheContext(
+      $this->getBuiltArticleViewBreadcrumb(),
+      "Article list breadcrumb does not contain url cache context",
+    );
+  }
+
   protected function testBuiltBreadcrumbContainsLinkToHomeAsFirstLink(Breadcrumb $breadcrumb, string $message) {
     $firstLink = $breadcrumb->getLinks()[0];
     $this->assertTrue(
@@ -438,6 +456,13 @@ class NodeBundleNodeListBreadcrumbBuilderBaseUnitTest extends UnitTestCase {
     $linkText = $firstLink->getText();
     $this->assertTrue(
       $linkText->getUntranslatedString() === HomeLinkTrait::getHomeLabel(),
+      $message
+    );
+  }
+
+  protected function testBuiltBreadcrumbContainsUrlCacheContext(Breadcrumb $breadcrumb, string $message) {
+    $this->assertTrue(
+      in_array(self::URL_CACHE_CONTEXT, $breadcrumb->getCacheContexts()),
       $message
     );
   }

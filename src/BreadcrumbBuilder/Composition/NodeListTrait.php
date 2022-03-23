@@ -33,6 +33,7 @@ trait NodeListTrait {
 
   protected function buildListBreadcrumb(\Drupal\node\NodeInterface $node): Breadcrumb {
     $breadcrumb = new Breadcrumb();
+    $breadcrumb->addCacheContexts(['url']);
     $breadcrumb->setLinks([
       $this->getHomeLink(),
       new Link(t($node->getTitle()), Url::fromRoute(RoutesDefinitions::NONE)),
@@ -43,7 +44,7 @@ trait NodeListTrait {
 
   protected function buildNodeBreadcrumb(\Drupal\node\NodeInterface $node): Breadcrumb {
     $breadcrumb = new Breadcrumb();
-
+    $breadcrumb->addCacheContexts(['url']);
     $breadcrumb->setLinks([
       $this->getHomeLink(),
       $this->getListLink(),

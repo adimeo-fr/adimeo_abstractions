@@ -2,7 +2,6 @@
 
 namespace Drupal\adimeo_abstractions\BreadcrumbBuilder\Composition;
 
-use Drupal\adimeo_abstractions\BreadcrumbBuilder\Composition\HomeLinkTrait;
 use Drupal\adimeo_abstractions\Constants\RoutesDefinitions;
 use Drupal\adimeo_abstractions\RouteMatch\GetNodeFromRouteMatchTrait;
 use Drupal\Core\Breadcrumb\Breadcrumb;
@@ -22,6 +21,7 @@ trait RouteListTrait {
 
   protected function buildListBreadcrumb(RouteMatchInterface $route_match): Breadcrumb {
     $breadcrumb = new Breadcrumb();
+    $breadcrumb->addCacheContexts(['url']);
     $breadcrumb->setLinks([
       $this->getHomeLink(),
       new Link(t($this->getListLabel()), Url::fromRoute(RoutesDefinitions::NONE)),
@@ -32,6 +32,7 @@ trait RouteListTrait {
   protected function buildNodeViewBreadcrumb(RouteMatchInterface $route_match): Breadcrumb {
     $node = $this->getNodeFromRouteMatch($route_match);
     $breadcrumb = new Breadcrumb();
+    $breadcrumb->addCacheContexts(['url']);
     $breadcrumb->setLinks([
       $this->getHomeLink(),
       new Link(t($this->getListLabel()), Url::fromRoute($this->getListRoute())),
